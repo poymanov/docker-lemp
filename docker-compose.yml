@@ -1,0 +1,31 @@
+version: "3"
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+        - "8000:80"
+    volumes:
+      - ./app:/var/www
+    links:
+      - php
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - ./app:/var/www
+    links:
+      - db
+  db:
+    image: mariadb:latest
+    ports:
+      - 13306:3306
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - .env
+volumes:
+  db:
+    driver: local
